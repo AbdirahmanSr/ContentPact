@@ -928,6 +928,8 @@
 </footer>
 
 <script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTB70u8wAC0h9nQqitSbZSXtrj1ItuIKfAdwVSHb-glP-2KF2hPANfWO9dIfAzxKpL/exec';
+
   // Nav scroll effect
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
@@ -966,54 +968,85 @@
     }
   }
 
-  // Email validation regex
+  // Email validation
   function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  // Form submit feedback
-  function handleSubmit(type) {
+  // Form submit — sends to Google Sheets
+  async function handleSubmit(type) {
     const panel = document.getElementById('panel-' + type);
     const btn = panel.querySelector('.form-submit');
     const inputs = panel.querySelectorAll('input, select, textarea');
-    
-    // Validate email fields
+
+    // Email validation
     let isValid = true;
     inputs.forEach(input => {
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
       if (input.type === 'email' && input.value.trim() !== '') {
         if (!isValidEmail(input.value.trim())) {
           isValid = false;
           input.style.borderColor = '#FF6B6B';
-          input.style.boxShadow = '0 0 0 2px rgba(255, 107, 107, 0.2)';
+          input.style.boxShadow = '0 0 0 2px rgba(255,107,107,0.2)';
         }
       }
     });
-    
+
     if (!isValid) {
       alert('Please enter a valid email address.');
       return;
     }
-    
-    // Clear error styles
-    inputs.forEach(input => {
-      input.style.borderColor = '';
-      input.style.boxShadow = '';
-    });
-    
-    btn.textContent = '✓ Received — We\'ll be in touch!';
-    btn.style.background = '#0F6E56';
-    btn.style.cursor = 'default';
+
+    // Gather data
+    let data = { type };
+    if (type === 'brand') {
+      data.name   = panel.querySelectorAll('input')[0].value;
+      data.email  = panel.querySelectorAll('input')[1].value;
+      data.url    = panel.querySelectorAll('input')[2].value;
+      data.budget = panel.querySelector('select').value;
+    } else {
+      data.name     = panel.querySelectorAll('input')[0].value;
+      data.email    = panel.querySelectorAll('input')[1].value;
+      data.channel  = panel.querySelectorAll('input')[2].value;
+      data.mediakit = panel.querySelectorAll('input')[3].value;
+    }
+
+    if (!data.name || !data.email) {
+      alert('Please fill in at least your name and email.');
+      return;
+    }
+
+    // Sending state
+    btn.textContent = 'Sending...';
     btn.disabled = true;
-    
-    // Clear form inputs
-    inputs.forEach(input => {
-      input.value = '';
-      if (input.tagName === 'SELECT') {
-        input.selectedIndex = 0;
-      }
-    });
-    
+    btn.style.cursor = 'default';
+    btn.style.background = '#7A9BBF';
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      btn.textContent = '✓ Received — We\'ll be in touch!';
+      btn.style.background = '#0F6E56';
+
+      // Clear fields
+      inputs.forEach(i => {
+        i.value = '';
+        if (i.tagName === 'SELECT') i.selectedIndex = 0;
+      });
+
+    } catch (err) {
+      btn.textContent = 'Something went wrong — try again';
+      btn.style.background = '#c0392b';
+      btn.disabled = false;
+      btn.style.cursor = 'pointer';
+    }
+
     setTimeout(() => {
       btn.textContent = type === 'brand' ? 'Submit Brand Inquiry →' : 'Join Creator Network →';
       btn.style.background = '';
