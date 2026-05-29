@@ -975,12 +975,12 @@
     const inputs = panel.querySelectorAll('input, select');
 
     // Email validation
-    let isValid = true;
+   let isValid = true;
     inputs.forEach(input => {
       input.style.borderColor = '';
       input.style.boxShadow = '';
       if (input.type === 'email' && input.value.trim() !== '') {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
+        if (input.value.trim().indexOf('@') === -1) {
           isValid = false;
           input.style.borderColor = '#FF6B6B';
           input.style.boxShadow = '0 0 0 2px rgba(255,107,107,0.2)';
