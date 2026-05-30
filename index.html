@@ -975,7 +975,7 @@
     const inputs = panel.querySelectorAll('input, select');
 
     // Email validation
-   let isValid = true;
+    let isValid = true;
     inputs.forEach(input => {
       input.style.borderColor = '';
       input.style.boxShadow = '';
@@ -990,21 +990,21 @@
     if (!isValid) { alert('Please enter a valid email address.'); return; }
 
     // Gather data into FormData
-    const fd = new FormData();
+    const params = new URLSearchParams();
     if (type === 'brand') {
       const vals = panel.querySelectorAll('input');
       if (!vals[0].value || !vals[1].value) { alert('Please fill in at least your name and email.'); return; }
-      fd.append('entry.1153240187', vals[0].value);
-      fd.append('entry.947218208',  vals[1].value);
-      fd.append('entry.1533569995', vals[2].value);
-      fd.append('entry.1344071315', panel.querySelector('select').value);
+      params.append('entry.1153240187', vals[0].value.trim());
+      params.append('entry.947218208',  vals[1].value.trim());
+      params.append('entry.1533569995', vals[2].value.trim());
+      params.append('entry.1344071315', panel.querySelector('select').value);
     } else {
       const vals = panel.querySelectorAll('input');
       if (!vals[0].value || !vals[1].value) { alert('Please fill in at least your name and email.'); return; }
-      fd.append('entry.1226124507', vals[0].value);
-      fd.append('entry.1028318472', vals[1].value);
-      fd.append('entry.1469547900', vals[2].value);
-      fd.append('entry.239964125',  vals[3].value);
+      params.append('entry.1226124507', vals[0].value.trim());
+      params.append('entry.1028318472', vals[1].value.trim());
+      params.append('entry.1469547900', vals[2].value.trim());
+      params.append('entry.239964125',  vals[3].value.trim());
     }
 
     btn.textContent = 'Sending...';
@@ -1016,7 +1016,8 @@
       await fetch(type === 'brand' ? BRAND_FORM_URL : CREATOR_FORM_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: fd
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString()
       });
       btn.textContent = '✓ Received — We\'ll be in touch!';
       btn.style.background = '#0F6E56';
