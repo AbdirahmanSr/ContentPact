@@ -172,8 +172,17 @@
   .hero-logo {
     margin-bottom: 2.5rem;
     animation: fadeSlideDown 0.75s 0.05s ease both;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 1.5rem;
   }
-  .hero-logo svg { height: 64px; width: auto; }
+  .hero-logo svg { 
+    height: 64px; 
+    width: 100%;
+    max-width: 420px;
+  }
 
   .hero h1 {
     font-family: 'DM Serif Display', serif;
