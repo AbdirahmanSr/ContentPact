@@ -2,7 +2,7 @@
 
 Welcome to the ContentPact website repository! This is the official landing page and onboarding hub for ContentPact, a B2B SaaS influencer marketing platform that bridges the gap between category-defining tech companies and elite tech creators.
 
-**Live Website:** [https://github.com/AbdirahmanSr/ContentPact](https://github.com/AbdirahmanSr/ContentPact)
+**Live Website:** [https://ContentPact.com
 
 ---
 
